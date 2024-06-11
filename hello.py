@@ -2,35 +2,58 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-# Define the function for a catenoid
-def f(u, v):
-    x = np.cosh(v/10) * np.cos(u)  # Adjust the diameter here
-    y = np.cosh(v/10) * np.sin(u)  # Adjust the diameter here
-    z = v
-    return x, y, z
+# Parameters for the wormhole
+a = 2  # Stretch along the z-axis
+b = 0.5  # Throat size
 
-# Create a grid of points on which to evaluate the function
-u = np.linspace(0, 2*np.pi, 100)
-v = np.linspace(-1, 1, 100)
-u, v = np.meshgrid(u, v)
+# Parameters for the toroids
+R_toroid = 2.5  # Major radius (from the center of the toroid to the center of the tube)
+r_toroid = 0.5  # Minor radius (radius of the tube)
 
-# Evaluate the function on the grid
-x, y, z = f(u, v)
+# Generate mesh grid for the wormhole
+z = np.linspace(-10, 10, 400)  # z coordinates
+theta = np.linspace(0, 2 * np.pi, 100)  # Angular coordinates
+Z, Theta = np.meshgrid(z, theta)
 
-# Create a 3D plot
+# Compute radial distance r
+R = np.sqrt(b**2 + (Z/a)**2)
+
+# Compute Cartesian coordinates for the wormhole
+X = R * np.cos(Theta)
+Y = R * np.sin(Theta)
+
+# Generate mesh grid for the toroids
+phi = np.linspace(0, 2 * np.pi, 100)
+phi, Theta_toroid = np.meshgrid(phi, theta)
+
+# Compute Cartesian coordinates for the toroids wrapping around the wormhole
+# Toroid 1
+X_toroid1 = (R_toroid + r_toroid * np.cos(phi)) * np.cos(Theta_toroid)
+Y_toroid1 = (R_toroid + r_toroid * np.cos(phi)) * np.sin(Theta_toroid)
+Z_toroid1 = r_toroid * np.sin(phi) - b
+
+# Toroid 2
+X_toroid2 = (R_toroid + r_toroid * np.cos(phi)) * np.cos(Theta_toroid)
+Y_toroid2 = (R_toroid + r_toroid * np.cos(phi)) * np.sin(Theta_toroid)
+Z_toroid2 = r_toroid * np.sin(phi) + b
+
+# Combine the coordinates
+X_combined = np.concatenate((X, X_toroid1, X_toroid2), axis=0)
+Y_combined = np.concatenate((Y, Y_toroid1, Y_toroid2), axis=0)
+Z_combined = np.concatenate((Z, Z_toroid1, Z_toroid2), axis=0)
+
+# Plot the combined object
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(X, Y, Z, color='b', alpha=0.7, rstride=10, cstride=10, edgecolor='k', linewidth=0.5)
+ax.plot_surface(X_toroid1, Y_toroid1, Z_toroid1, color='r', alpha=0.6, rstride=5, cstride=5, edgecolor='k', linewidth=0.5)
+ax.plot_surface(X_toroid2, Y_toroid2, Z_toroid2, color='r', alpha=0.6, rstride=5, cstride=5, edgecolor='k', linewidth=0.5)
 
-# Plot the catenoid
-ax.plot_surface(x, y, z, color='blue', alpha=0.5)
-
-# Set labels
+# Set plot labels and title
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
-
-# Set title
-ax.set_title('Wormhole')
+ax.set_title('Wormhole Visualization with Wrapping Toroids')
 
 # Show the plot
 plt.show()
