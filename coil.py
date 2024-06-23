@@ -19,9 +19,9 @@ cross_sectional_area = np.pi * (outer_diameter / 2)**2 - np.pi * windings_radius
 current_density = current1 / cross_sectional_area
 
 # Calculation grid
-x = np.linspace(-0.2, 0.2, 20)
-y = np.linspace(-0.2, 0.2, 20)
-z = np.linspace(-0.2, 0.2, 20)
+x = np.linspace(-0.2, 0.2, 40)  # Increased number of points
+y = np.linspace(-0.2, 0.2, 40)  # Increased number of points
+z = np.linspace(-0.2, 0.2, 40)  # Increased number of points
 X, Y, Z = np.meshgrid(x, y, z)
 
 # Initialize magnetic field arrays
@@ -53,7 +53,7 @@ Bx1, By1, Bz1 = calculate_magnetic_field(Bx1, By1, Bz1, current1, X, Y, Z - 0.00
 Bx2, By2, Bz2 = calculate_magnetic_field(Bx2, By2, Bz2, current2, X, Y, Z + 0.00125)
 
 # Adjust subsample rate here
-subsample_rate = 2  # Change this value to increase/decrease the number of vectors
+subsample_rate = 2  # Decrease the subsample rate to show more vectors
 subsample = (slice(None, None, subsample_rate), slice(None, None, subsample_rate), slice(None, None, subsample_rate))
 
 # Plot the magnetic field in 3D
