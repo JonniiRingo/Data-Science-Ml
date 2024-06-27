@@ -1,2 +1,2 @@
-oidal Coils')
-ax.legend()
+
+        Spatial coordinates.
